@@ -1,10 +1,13 @@
 import { Route, Routes } from "react-router-dom";
+import { Home } from "./components/pages/Home/Home";
+import { Header } from "./components/UI/Header/Header";
 
 function App() {
   return (
-    <div className="container">
+    <div className="container app">
+      <Header/>
       <Routes>
-        <Route path="/" element={<h1>Hello</h1>}></Route>
+        <Route path="/" element={<Home/>}></Route>
         <Route
           path="*"
           element={

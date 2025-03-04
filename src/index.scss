@@ -1,5 +1,27 @@
 @import url("https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Prata&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+ol,
+ul {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+  color: inherit;
 
+  &:hover {
+    color: inherit;
+  }
+}
+
+$border-button-radius: 6px;
+$blue-color: #0077ff;
+$yellow-color: #ffe53b;
+$black-color: #000;
+$white-color: #fff;
 :root {
   font-family: "Epilogue", sans-serif;
   font-weight: 400;
@@ -9,7 +31,7 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-  
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -49,20 +71,11 @@ html {
     max-width: 1280px;
   }
 }
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-ol,
-ul {
-  list-style: none;
-}
-a {
-  text-decoration: none;
-  color: inherit;
 
-  &:hover {
-    color: inherit;
-  }
+.app {
+  display: flex;
+  width: 100px;
+  height: 100vh;
+  flex-direction: column;
+  align-items: center;
 }
