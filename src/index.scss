@@ -1,0 +1,68 @@
+@import url("https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Prata&display=swap");
+
+:root {
+  font-family: "Epilogue", sans-serif;
+  font-weight: 400;
+  font-optical-sizing: auto;
+  font-style: normal;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+  
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+html {
+  --refRes: 250;
+  font-size: calc(100vw / var(--refRes) * 12);
+  @media (min-width: 440px) {
+    --refRes: 340;
+  }
+  @media (min-width: 530px) {
+    --refRes: 430;
+  }
+  @media (min-width: 660px) {
+    --refRes: 560;
+  }
+  @media (min-width: 900px) {
+    --refRes: 750;
+  }
+}
+.container {
+  padding: 0 4px;
+  min-width: 320px;
+  margin: 0 auto;
+  max-width: 440px;
+  @media (min-width: 440px) {
+    max-width: 580px;
+  }
+  @media (min-width: 660px) {
+    max-width: 800px;
+  }
+  @media (min-width: 900px) {
+    max-width: 1000px;
+  }
+  @media (min-width: 1050px) {
+    max-width: 1280px;
+  }
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+ol,
+ul {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    color: inherit;
+  }
+}
