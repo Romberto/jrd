@@ -1,17 +1,11 @@
 import React from "react";
 import styled from "./Card.module.scss";
 import { Button } from "../Button/Button";
+import { CardType } from "../../../utils/types";
 
 // карточка семинара
 
-export type CardType = {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  time: string;
-  photo: string;
-};
+
 export type CardPropsType = {
   data: CardType;
   color?: "blue" | "yellow";

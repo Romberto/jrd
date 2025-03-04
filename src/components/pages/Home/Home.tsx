@@ -1,20 +1,22 @@
-import React from 'react';
-import styled from './Home.module.scss'
-import { Card } from '../../UI/Card/Card';
+import React from "react";
+import styled from "./Home.module.scss";
+import { Card } from "../../UI/Card/Card";
+import { useGetSeminarsQuery } from "../../../app/seminarApi";
+import { CardType } from "../../../utils/types";
 
 export const Home: React.FC = () => {
+  const { data, isError, isLoading } = useGetSeminarsQuery(undefined);
 
-  const data = {
-    "id": 10,
-    "title": "Будущее косметологии с Kosmoteros",
-    "description": "Обсуждение перспектив развития косметологии и роли инноваций.",
-    "date": "19.02.2025",
-    "time": "19:00",
-    "photo": "https://avatars.mds.yandex.net/i?id=debc3beed12e6e30d7c1ff43b9629dc5229a0aea-5301046-images-thumbs&n=13"
-  }
+  if (isLoading) return <p>Loading...</p>;
+  if (isError || !data) return <p>Error...</p>;
   return (
-
-      <Card data={data}/>
-
+    <ul className={styled.seminars}>
+      {data &&
+        data.map((item) => (
+          <li key={item.id}>
+            <Card data={item} />
+          </li>
+        ))}
+    </ul>
   );
 };
