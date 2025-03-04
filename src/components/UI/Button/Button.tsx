@@ -1,4 +1,4 @@
-import React, { Children } from "react";
+import React from "react";
 import styled from "./Button.module.scss";
 
 export type ButtonType = React.ButtonHTMLAttributes<HTMLButtonElement> & {

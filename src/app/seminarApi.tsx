@@ -8,6 +8,9 @@ export const seminarApi = createApi({
     getSeminars: build.query<CardType[], undefined>({
       query: () => "seminars/",
     }),
+    getSeminarById: build.query<CardType, string>({
+      query:(id) => `seminars/${id}`
+    })
   }),
 });
 
