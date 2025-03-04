@@ -1,0 +1,19 @@
+@use "../../../index" as *;
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 3rem;
+  margin-bottom: 0.7rem;
+}
+.logo {
+  font-size: 1.4rem;
+  font-weight: 600;
+  padding: 0.3rem 0.5rem;
+  color: $white-color;
+}
+
+
+
