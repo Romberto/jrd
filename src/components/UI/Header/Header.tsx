@@ -24,6 +24,7 @@ export const Header: React.FC = () => {
       <Button className={styled.btn} color="blue" onClick={handleClick}>
         Add seminar
       </Button>
+      <span id="modal"></span>
       {isModalOpen &&
         createPortal(
           <Modal onClose={closeModal}/>,

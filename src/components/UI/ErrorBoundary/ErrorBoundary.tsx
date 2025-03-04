@@ -1,11 +1,11 @@
 import React, { Component, ReactNode } from 'react';
 
 interface ErrorBoundaryProps {
-  children: ReactNode; // Дети, которые будут обернуты в Error Boundary
+  children: ReactNode; 
 }
 
 interface ErrorBoundaryState {
-  hasError: boolean; // Состояние для отслеживания ошибки
+  hasError: boolean; 
 }
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
@@ -24,6 +24,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
   render() {
     if (this.state.hasError) {
+        // TODO поработать с дизайном сообщения
       return <h1>Что-то пошло не так.</h1>;
     }
 
