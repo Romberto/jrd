@@ -1,0 +1,21 @@
+@use '../../../index' as *;
+
+.alert_modal {
+  width: 0;
+  overflow: hidden;
+  height: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: width ease 0.3s;
+  background-color: $white-color;
+  border-radius: $border-button-radius;
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  p {
+    color: $success-color;
+    font-size: 1.2rem;
+  }
+}

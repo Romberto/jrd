@@ -9,6 +9,8 @@
     align-items: center;
     justify-content: center;
     row-gap: 0.3rem;
+    transition: width ease 0.3s;
+    overflow: hidden;
     h2{
         color:$gray-color;
     }
@@ -58,4 +60,16 @@
         font-size: 1rem;
         text-align: center;
     }
+
+}
+.form_hide{
+    width: 0;
+}
+
+/* Alert Modal*/
+
+
+
+.alert_modal_visible{
+    width: 90%
 }

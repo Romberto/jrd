@@ -1,9 +1,10 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import styled from "./Form.module.scss";
 import { Button } from "../Button/Button";
 import { CardType } from "../../../utils/types";
 import { isValidURL } from "../../../utils/utils";
 import { useAddSeminarMutation } from "../../../app/seminarApi";
+import { AlertModal } from "../AlertModal/AlertModal";
 
 const initialState = {
   title: "",
@@ -17,12 +18,18 @@ const initialStateError = {
   photo: "",
 };
 
-export const Form: React.FC = () => {
+export const Form: React.FC<{onClose?:()=>void}> = ({onClose}) => {
   const [formData, setFormData] = useState<CardType>(initialState);
   const [formErrors, setFormErrors] = useState<CardType>(initialStateError);
-  const [ addSeminar ] = useAddSeminarMutation()
+  const [formVisible, setFormVisible] = useState<boolean>(true);
+  const [addSeminar, {isSuccess, isError}] = useAddSeminarMutation();
 
-
+  useEffect(() => {
+    if (isSuccess) {
+      setFormVisible(false)
+    }
+  }, [isSuccess, isError]); 
+   
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -61,12 +68,20 @@ export const Form: React.FC = () => {
     }
     // Проверка на остальные ошибки заполненя полей формы
     const isFormValid = Object.values(formErrors).every((item) => item === "");
-    if(isFormValid && isValueFormFull){
-      addSeminar(formData)
-    };
+    if (isFormValid && isValueFormFull) {
+      addSeminar(formData);
+    }
+
+    {onClose && setTimeout(()=>{onClose()}, 2000)}
   };
+
   return (
-    <form className={styled.form}>
+    <>
+    <form
+      className={`${
+        formVisible ? styled.form : `${styled.form} ${styled.form_hide}`
+      }`}
+    >
       <h2>Добавте семинар</h2>
       <label>
         <input
@@ -134,7 +149,17 @@ export const Form: React.FC = () => {
       <Button color="blue" type="submit" onClick={handleSubmit}>
         Добавить
       </Button>
-      <p className={styled.validation_message}>"Все поля должны быть заполнены!"</p>
+      <p className={styled.validation_message}>
+        "Все поля должны быть заполнены!"
+      </p>
     </form>
+     <AlertModal message="семинар добавлен" className={`${!formVisible && styled.alert_modal_visible}`}/>
+    </>
+    
   );
 };
+
+
+
+
+
