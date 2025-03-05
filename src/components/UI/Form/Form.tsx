@@ -6,30 +6,49 @@ import { isValidURL } from "../../../utils/utils";
 import { useAddSeminarMutation } from "../../../app/seminarApi";
 import { AlertModal } from "../AlertModal/AlertModal";
 
-const initialState = {
+let initialState = {
   title: "",
   description: "",
   date: "",
   time: "",
   photo: "",
 };
+
 const initialStateError = {
-  ...initialState,
+  title: "",
+  description: "",
+  date: "",
+  time: "",
   photo: "",
 };
 
-export const Form: React.FC<{onClose?:()=>void}> = ({onClose}) => {
+export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
+  onClose,
+  data,
+}) => {
+  if (data) {
+    const dateString = data.date; // форматируем строку в формат для типа дата
+    const [day, month, year] = dateString.split('.'); 
+    const formattedDate = `${year}-${month}-${day}`;
+    initialState = {
+      title: data.title,
+      description: data.description,
+      date: formattedDate,
+      time: data.time,
+      photo: data.photo,
+    };
+  }
   const [formData, setFormData] = useState<CardType>(initialState);
   const [formErrors, setFormErrors] = useState<CardType>(initialStateError);
   const [formVisible, setFormVisible] = useState<boolean>(true);
-  const [addSeminar, {isSuccess, isError}] = useAddSeminarMutation();
+  const [addSeminar, { isSuccess, isError }] = useAddSeminarMutation();
 
   useEffect(() => {
     if (isSuccess) {
-      setFormVisible(false)
+      setFormVisible(false);
     }
-  }, [isSuccess, isError]); 
-   
+  }, [isSuccess, isError]);
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -71,95 +90,108 @@ export const Form: React.FC<{onClose?:()=>void}> = ({onClose}) => {
     if (isFormValid && isValueFormFull) {
       addSeminar(formData);
     }
-
-    {onClose && setTimeout(()=>{onClose()}, 2000)}
+    {
+      onClose &&
+        setTimeout(() => {
+          onClose();
+        }, 2000);
+    }
   };
 
   return (
     <>
-    <form
-      className={`${
-        formVisible ? styled.form : `${styled.form} ${styled.form_hide}`
-      }`}
-    >
-      <h2>Добавте семинар</h2>
-      <label>
-        <input
-          className={styled.input}
-          placeholder="URL картинки"
-          name="photo"
-          type="text"
-          required
-          value={formData.photo}
-          onChange={handleChange}
-        />
-        {formErrors.photo && <p className={styled.error}>{formErrors.photo}</p>}
-      </label>
+      <form
+        className={`${
+          formVisible ? styled.form : `${styled.form} ${styled.form_hide}`
+        }`}
+      >
+        <h2>Добавте семинар</h2>
+        <label>
+          <input
+            className={styled.input}
+            placeholder="URL картинки"
+            name="photo"
+            type="text"
+            required
+            value={formData.photo}
+            onChange={handleChange}
+          />
+          {formErrors.photo && (
+            <p className={styled.error}>{formErrors.photo}</p>
+          )}
+        </label>
 
-      <label>
-        <input
-          className={styled.input}
-          placeholder="Загаловок"
-          name="title"
-          type="text"
-          required
-          value={formData.title}
-          onChange={handleChange}
-        />
-        {formErrors.title && <p className={styled.error}>{formErrors.title}</p>}
-      </label>
-      <label>
-        <textarea
-          placeholder="Описание"
-          className={styled.input}
-          name="description"
-          rows={4}
-          required
-          value={formData.description}
-          onChange={handleChange}
-        />
-        {formErrors.description && (
-          <p className={styled.error}> {formErrors.description}</p>
+        <label>
+          <input
+            className={styled.input}
+            placeholder="Загаловок"
+            name="title"
+            type="text"
+            required
+            value={formData.title}
+            onChange={handleChange}
+          />
+          {formErrors.title && (
+            <p className={styled.error}>{formErrors.title}</p>
+          )}
+        </label>
+        <label>
+          <textarea
+            placeholder="Описание"
+            className={styled.input}
+            name="description"
+            rows={4}
+            required
+            value={formData.description}
+            onChange={handleChange}
+          />
+          {formErrors.description && (
+            <p className={styled.error}> {formErrors.description}</p>
+          )}
+        </label>
+        <label>
+          <p className={styled.label_title}>Дата</p>
+          <input
+            className={styled.input}
+            name="date"
+            type="date"
+            required
+            value={formData.date}
+            onChange={handleChange}
+          />
+          {formErrors.date && <p className={styled.error}>{formErrors.date}</p>}
+        </label>
+        <label>
+          <p className={styled.label_title}>Время</p>
+          <input
+            className={styled.input}
+            name="time"
+            type="time"
+            required
+            value={formData.time}
+            onChange={handleChange}
+          />
+          {formErrors.time && <p className={styled.error}>{formErrors.time}</p>}
+        </label>
+        {data ? (
+          <div>
+            <Button>Редактировать</Button>
+            <Button>Удалить</Button>
+          </div>
+        ) : (
+          <Button color="blue" type="submit" onClick={handleSubmit}>
+            Добавить
+          </Button>
         )}
-      </label>
-      <label>
-        <p className={styled.label_title}>Дата</p>
-        <input
-          className={styled.input}
-          name="date"
-          type="date"
-          required
-          value={formData.date}
-          onChange={handleChange}
-        />
-        {formErrors.date && <p className={styled.error}>{formErrors.date}</p>}
-      </label>
-      <label>
-        <p className={styled.label_title}>Время</p>
-        <input
-          className={styled.input}
-          name="time"
-          type="time"
-          required
-          value={formData.time}
-          onChange={handleChange}
-        />
-        {formErrors.time && <p className={styled.error}>{formErrors.time}</p>}
-      </label>
-      <Button color="blue" type="submit" onClick={handleSubmit}>
-        Добавить
-      </Button>
-      <p className={styled.validation_message}>
-        "Все поля должны быть заполнены!"
-      </p>
-    </form>
-     <AlertModal message="семинар добавлен" className={`${!formVisible && styled.alert_modal_visible}`}/>
+
+        <p className={styled.validation_message}>
+          "Все поля должны быть заполнены!"
+        </p>
+      </form>
+      <AlertModal
+        message="семинар добавлен"
+        className={`${!formVisible && styled.alert_modal_visible}`}
+      />
     </>
-    
   );
 };
-
-
-
-
-

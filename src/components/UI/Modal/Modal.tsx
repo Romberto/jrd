@@ -1,12 +1,14 @@
 import React from "react";
 import styled from "./Modal.module.scss";
 import { Form } from "../Form/Form";
+import { CardType } from "../../../utils/types";
 
 type Modal = {
   onClose: () => void;
+  data?: CardType
 };
 
-export const Modal: React.FC<Modal> = ({ onClose }) => {
+export const Modal: React.FC<Modal> = ({ onClose, data }) => {
   const closeModal = () => {
     onClose();
   };
@@ -21,7 +23,7 @@ export const Modal: React.FC<Modal> = ({ onClose }) => {
         <button onClick={closeModal} className={styled.close}>
           Close
         </button>
-        <Form onClose={onClose} />
+        <Form onClose={onClose} data={data}/>
       </div>
     </div>
   );
