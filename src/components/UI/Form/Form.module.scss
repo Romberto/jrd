@@ -38,7 +38,7 @@
         position: relative;
         padding-bottom: 1rem;
         .error{
-            color:red;
+            color:$error-color;
             margin-bottom: 0.2rem;
             font-size: 1rem;
             position: absolute;
@@ -53,7 +53,7 @@
         }
     }
     .validation_message{
-        color: red;
+        color: $error-color;
         width: 100%;
         font-size: 1rem;
         text-align: center;

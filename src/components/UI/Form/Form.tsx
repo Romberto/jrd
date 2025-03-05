@@ -3,6 +3,7 @@ import styled from "./Form.module.scss";
 import { Button } from "../Button/Button";
 import { CardType } from "../../../utils/types";
 import { isValidURL } from "../../../utils/utils";
+import { useAddSeminarMutation } from "../../../app/seminarApi";
 
 const initialState = {
   title: "",
@@ -19,6 +20,8 @@ const initialStateError = {
 export const Form: React.FC = () => {
   const [formData, setFormData] = useState<CardType>(initialState);
   const [formErrors, setFormErrors] = useState<CardType>(initialStateError);
+  const [ addSeminar ] = useAddSeminarMutation()
+
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -58,7 +61,9 @@ export const Form: React.FC = () => {
     }
     // Проверка на остальные ошибки заполненя полей формы
     const isFormValid = Object.values(formErrors).every((item) => item === "");
-    console.log(isFormValid && isValueFormFull);
+    if(isFormValid && isValueFormFull){
+      addSeminar(formData)
+    };
   };
   return (
     <form className={styled.form}>

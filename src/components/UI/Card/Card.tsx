@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "./Card.module.scss";
 import { Button } from "../Button/Button";
 import { CardType } from "../../../utils/types";
-import { FAKE_PHOTO } from "../../../utils/constants";
+import  FAKE_PHOTO  from "../../../assets/noneforo-700x700.jpg";
+
 
 // карточка семинара
 
