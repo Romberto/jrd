@@ -79,6 +79,30 @@
       "date": "19.02.2025",
       "time": "19:00",
       "photo": "https://picsum.photos/id/10/750/730"
+    },
+    {
+      "id": "1",
+      "title": "Новинки Kosmoteros",
+      "description": "Обзор новых средств и методик от Kosmoteros.",
+      "date": "2025-02-01",
+      "time": "10:00",
+      "photo": "https://picsum.photos/id/1/750/730"
+    },
+    {
+      "id": "1",
+      "title": "Новинки Kosmoteros",
+      "description": "Обзор новых средств и методик от Kosmoteros.",
+      "date": "2025-02-01",
+      "time": "10:00",
+      "photo": "https://picsum.photos/id/1/750/730"
+    },
+    {
+      "id": "1",
+      "title": "Новинки Kosmoteros",
+      "description": "Обзор новых средств и методик от Kosmoteros.",
+      "date": "2025-02-01",
+      "time": "10:00",
+      "photo": "https://picsum.photos/id/1/750/730"
     }
   ]
 }

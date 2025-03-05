@@ -7,6 +7,7 @@ import { useAddSeminarMutation } from "../../../app/seminarApi";
 import { AlertModal } from "../AlertModal/AlertModal";
 
 let initialState = {
+  id: "",
   title: "",
   description: "",
   date: "",
@@ -15,6 +16,7 @@ let initialState = {
 };
 
 const initialStateError = {
+  id: "",
   title: "",
   description: "",
   date: "",
@@ -26,29 +28,34 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
   onClose,
   data,
 }) => {
-  if (data) {
-    const dateString = data.date; // форматируем строку в формат для типа дата
-    const [day, month, year] = dateString.split('.'); 
-    const formattedDate = `${year}-${month}-${day}`;
-    initialState = {
-      title: data.title,
-      description: data.description,
-      date: formattedDate,
-      time: data.time,
-      photo: data.photo,
-    };
-  }
   const [formData, setFormData] = useState<CardType>(initialState);
   const [formErrors, setFormErrors] = useState<CardType>(initialStateError);
   const [formVisible, setFormVisible] = useState<boolean>(true);
-  const [addSeminar, { isSuccess, isError }] = useAddSeminarMutation();
+  const [addSeminar, { isSuccess }] = useAddSeminarMutation();
 
   useEffect(() => {
     if (isSuccess) {
       setFormVisible(false);
     }
-  }, [isSuccess, isError]);
-
+  }, [isSuccess]);
+  useEffect(() => {
+    if (data) {
+      const dateString = data.date;
+      const [day, month, year] = dateString.split(".");
+      const formattedDate = `${year}-${month}-${day}`;
+  
+      setFormData({
+        id: data.id,
+        title: data.title,
+        description: data.description,
+        date: formattedDate,
+        time: data.time,
+        photo: data.photo,
+      });
+    } else {
+      setFormData(initialState); // Сброс формы при добавлении нового элемента
+    }
+  }, [data]);
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -94,10 +101,13 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
       onClose &&
         setTimeout(() => {
           onClose();
+          setFormData({ ...initialStateError });
         }, 2000);
     }
   };
 
+  const handleEdit = () => {};
+  const handleRemove = () => {};
   return (
     <>
       <form
@@ -175,8 +185,16 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
         </label>
         {data ? (
           <div className={styled.btn_list}>
-            <Button className={styled.edit} color="blue">Редактировать</Button>
-            <Button className={styled.remove} color="red">Удалить</Button>
+            <Button className={styled.edit} onClick={handleEdit} color="blue">
+              Редактировать
+            </Button>
+            <Button
+              className={styled.remove}
+              onClick={handleRemove}
+              color="red"
+            >
+              Удалить
+            </Button>
           </div>
         ) : (
           <Button color="blue" type="submit" onClick={handleSubmit}>
