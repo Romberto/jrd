@@ -174,9 +174,9 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
           {formErrors.time && <p className={styled.error}>{formErrors.time}</p>}
         </label>
         {data ? (
-          <div>
-            <Button>Редактировать</Button>
-            <Button>Удалить</Button>
+          <div className={styled.btn_list}>
+            <Button className={styled.edit} color="blue">Редактировать</Button>
+            <Button className={styled.remove} color="red">Удалить</Button>
           </div>
         ) : (
           <Button color="blue" type="submit" onClick={handleSubmit}>

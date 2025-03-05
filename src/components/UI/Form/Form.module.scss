@@ -60,6 +60,12 @@
         font-size: 1rem;
         text-align: center;
     }
+    .btn_list{
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        width: 100%;
+    }
 
 }
 .form_hide{
@@ -73,3 +79,5 @@
 .alert_modal_visible{
     width: 90%
 }
+
+

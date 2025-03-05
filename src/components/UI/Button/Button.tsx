@@ -4,7 +4,7 @@ import styled from "./Button.module.scss";
 export type ButtonType = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children?: React.ReactNode;
   className?: string;
-  color?: "yellow" | "blue";
+  color?: "red" | "blue";
 };
 
 export const Button: React.FC<ButtonType> = ({
@@ -15,8 +15,8 @@ export const Button: React.FC<ButtonType> = ({
 }) => {
   let btnClass = `${styled.btn} ${className}`;
   if (color) {
-    if (color === "yellow") {
-      btnClass += ` ${styled.yellow}`;
+    if (color === "red") {
+      btnClass += ` ${styled.red}`;
     } else if (color === "blue") {
       btnClass += ` ${styled.blue}`;
     }
