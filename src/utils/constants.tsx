@@ -1,0 +1,1 @@
+export const FAKE_PHOTO = 'https://ptknovator.ru/attachments/Image/noneforo-700x700_1.jpg?template=generic'
