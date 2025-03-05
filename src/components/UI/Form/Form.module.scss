@@ -12,7 +12,6 @@
     h2{
         color:$gray-color;
     }
-
     textarea{
         height: 5rem;
         &::placeholder{
@@ -52,5 +51,11 @@
             margin-bottom: 0.2rem;
             font-size: 1rem; 
         }
+    }
+    .validation_message{
+        color: red;
+        width: 100%;
+        font-size: 1rem;
+        text-align: center;
     }
 }

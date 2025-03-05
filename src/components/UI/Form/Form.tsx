@@ -13,12 +13,13 @@ const initialState = {
 };
 const initialStateError = {
   ...initialState,
-  photo: " ",
+  photo: "",
 };
 
 export const Form: React.FC = () => {
   const [formData, setFormData] = useState<CardType>(initialState);
   const [formErrors, setFormErrors] = useState<CardType>(initialStateError);
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -27,32 +28,41 @@ export const Form: React.FC = () => {
       ...prev,
       [name]: value,
     }));
-    setFormErrors(initialState);
-    if (
-      !value &&
-      (name === "photo" || name === "title" || name === "description")
-    ) {
-      setFormErrors((prev) => ({
-        ...prev,
-        [name]: "обязательное поле",
-      }));
-    }
+    // валидация ссылки
     if (!isValidURL(value) && name === "photo") {
       setFormErrors((prev) => ({
         ...prev,
         [name]: "не корректная ссылка",
+      }));
+    } else {
+      setFormErrors((prev) => ({
+        ...prev,
+        [name]: "",
       }));
     }
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    const isValid = Object.values(formErrors).every((item) => item === "");
-    console.log(isValid);
+
+    let isValueFormFull = true; // переменная все поля заполнены
+    for (const [key, value] of Object.entries(formData)) {
+      // смотрим есть ли пустые поля в форме
+      if (value === "") {
+        setFormErrors((prev) => ({
+          ...prev,
+          [key]: "обязательное поле",
+        }));
+        isValueFormFull = false;
+      }
+    }
+    // Проверка на остальные ошибки заполненя полей формы
+    const isFormValid = Object.values(formErrors).every((item) => item === "");
+    console.log(isFormValid && isValueFormFull);
   };
   return (
     <form className={styled.form}>
-      <h2>Редактирование</h2>
+      <h2>Добавте семинар</h2>
       <label>
         <input
           className={styled.input}
@@ -117,8 +127,9 @@ export const Form: React.FC = () => {
         {formErrors.time && <p className={styled.error}>{formErrors.time}</p>}
       </label>
       <Button color="blue" type="submit" onClick={handleSubmit}>
-        Редактировать
+        Добавить
       </Button>
+      <p className={styled.validation_message}>"Все поля должны быть заполнены!"</p>
     </form>
   );
 };
