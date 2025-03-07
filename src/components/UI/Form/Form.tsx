@@ -7,7 +7,6 @@ import { useAddSeminarMutation } from "../../../app/seminarApi";
 import { AlertModal } from "../AlertModal/AlertModal";
 
 let initialState = {
-  id: "",
   title: "",
   description: "",
   date: "",
@@ -16,7 +15,6 @@ let initialState = {
 };
 
 const initialStateError = {
-  id: "",
   title: "",
   description: "",
   date: "",
@@ -31,11 +29,13 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
   const [formData, setFormData] = useState<CardType>(initialState);
   const [formErrors, setFormErrors] = useState<CardType>(initialStateError);
   const [formVisible, setFormVisible] = useState<boolean>(true);
-  const [addSeminar, { isSuccess }] = useAddSeminarMutation();
+  const [alertVisible, setAlertVisible] = useState(false)
+  const [addSeminar, { isSuccess ,isError}] = useAddSeminarMutation();
 
   useEffect(() => {
     if (isSuccess) {
-      setFormVisible(false);
+      setFormVisible(!formVisible);
+      setAlertVisible(!alertVisible)
     }
   }, [isSuccess]);
   useEffect(() => {
@@ -93,9 +93,16 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
       }
     }
     // Проверка на остальные ошибки заполненя полей формы
-    const isFormValid = Object.values(formErrors).every((item) => item === "");
+    const isFormValid = Object.values(formErrors).every((item) => item === "")
     if (isFormValid && isValueFormFull) {
-      addSeminar(formData);
+      try{
+        addSeminar(formData);
+      }catch(error){
+        console.error(error)
+      }
+      
+    }else{
+      throw new Error
     }
     {
       onClose &&
@@ -104,10 +111,12 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
           setFormData({ ...initialStateError });
         }, 2000);
     }
+
   };
 
   const handleEdit = () => {};
   const handleRemove = () => {};
+  if(isError) return <h2>error</h2>
   return (
     <>
       <form
@@ -206,10 +215,7 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
           "Все поля должны быть заполнены!"
         </p>
       </form>
-      <AlertModal
-        message="семинар добавлен"
-        className={`${!formVisible && styled.alert_modal_visible}`}
-      />
+      <AlertModal message="Семинад добавлен" isVisible={!alertVisible}/>
     </>
   );
 };

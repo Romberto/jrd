@@ -23,9 +23,7 @@ export const Modal: React.FC<Modal> = ({ onClose, data }) => {
         <button onClick={closeModal} className={styled.close}>
           Close
         </button>
-        { data ? <Form onClose={onClose} data={data}/> : <Form onClose={onClose}/>}
-        
-        
+        <Form onClose={onClose} data={data}/> 
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-@use '../../../index' as *;
+@use "../../../index" as *;
 
 .alert_modal {
   width: 0;
@@ -18,4 +18,8 @@
     color: $success-color;
     font-size: 1.2rem;
   }
+}
+
+.isshow {
+  width: 90%;
 }

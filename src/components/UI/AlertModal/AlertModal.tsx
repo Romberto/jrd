@@ -1,12 +1,20 @@
-import React from 'react';
-import styled from './AlertModal.module.scss'
+import React from "react";
+import styled from "./AlertModal.module.scss";
 
-export const AlertModal: React.FC<{message:string, className?:string}> = ({message, className}) => {
-    const alertClass = `${className ? `${styled.alert_modal} ${className}`: styled.alert_modal}`
-    return (
-      <div className={alertClass}>
-        <p>{message}</p>
-      </div>
-    );
-  };
-  
+export const AlertModal: React.FC<{ message: string; isVisible: boolean }> = ({
+  message,
+  isVisible,
+}) => {
+  return (
+    <div
+      className={
+        isVisible
+          ? `${styled.alert_modal}`
+          : `${styled.alert_modal} ${styled.isshow}`
+      }
+      data-js-allert
+    >
+      <p>{message}</p>
+    </div>
+  );
+};
