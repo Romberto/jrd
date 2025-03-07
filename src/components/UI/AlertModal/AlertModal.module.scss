@@ -14,8 +14,12 @@
   top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
-  p {
+  .red{
+    color: $error-color;
+  }.green{
     color: $success-color;
+  }
+  p {
     font-size: 1.2rem;
   }
 }

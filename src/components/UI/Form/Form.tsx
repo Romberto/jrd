@@ -29,21 +29,39 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
   const [formData, setFormData] = useState<CardType>(initialState);
   const [formErrors, setFormErrors] = useState<CardType>(initialStateError);
   const [formVisible, setFormVisible] = useState<boolean>(true);
-  const [alertVisible, setAlertVisible] = useState(false)
-  const [addSeminar, { isSuccess ,isError}] = useAddSeminarMutation();
+  const [alertVisible, setAlertVisible] = useState<{
+    isVisible: boolean;
+    status: "success" | "error" | "init";
+    message: string;
+  }>({ isVisible: false, message: "", status: "init" });
+  const [addSeminar, { isSuccess, isError }] = useAddSeminarMutation();
 
   useEffect(() => {
     if (isSuccess) {
       setFormVisible(!formVisible);
-      setAlertVisible(!alertVisible)
+      setAlertVisible((prev) => ({
+        ...prev,
+        isVisible: true,
+        message: "сообщение отправлено!",
+        status: "success",
+      }));
     }
-  }, [isSuccess]);
+    if (isError) {
+      setFormVisible(!formVisible);
+      setAlertVisible((prev) => ({
+        ...prev,
+        isVisible: true,
+        message: "Ошибка отправки формы",
+        status: "error",
+      }));
+    }
+  }, [isSuccess, isError]);
   useEffect(() => {
     if (data) {
       const dateString = data.date;
       const [day, month, year] = dateString.split(".");
       const formattedDate = `${year}-${month}-${day}`;
-  
+
       setFormData({
         id: data.id,
         title: data.title,
@@ -93,16 +111,11 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
       }
     }
     // Проверка на остальные ошибки заполненя полей формы
-    const isFormValid = Object.values(formErrors).every((item) => item === "")
+    const isFormValid = Object.values(formErrors).every((item) => item === "");
     if (isFormValid && isValueFormFull) {
-      try{
-        addSeminar(formData);
-      }catch(error){
-        console.error(error)
-      }
-      
-    }else{
-      throw new Error
+      addSeminar(formData);
+    } else {
+      throw new Error("form is not valid");
     }
     {
       onClose &&
@@ -111,12 +124,11 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
           setFormData({ ...initialStateError });
         }, 2000);
     }
-
   };
 
   const handleEdit = () => {};
   const handleRemove = () => {};
-  if(isError) return <h2>error</h2>
+
   return (
     <>
       <form
@@ -215,7 +227,11 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
           "Все поля должны быть заполнены!"
         </p>
       </form>
-      <AlertModal message="Семинад добавлен" isVisible={!alertVisible}/>
+      <AlertModal
+        mode={alertVisible.status}
+        message={alertVisible.message}
+        isVisible={!alertVisible.isVisible}
+      />
     </>
   );
 };
