@@ -3,7 +3,11 @@ import styled from "./Form.module.scss";
 import { Button } from "../Button/Button";
 import { CardType } from "../../../utils/types";
 import { isValidURL } from "../../../utils/utils";
-import { useAddSeminarMutation } from "../../../app/seminarApi";
+import {
+  useAddSeminarMutation,
+  useEditSeminarMutation,
+  useRemoveSeminarMutation,
+} from "../../../app/seminarApi";
 import { AlertModal } from "../AlertModal/AlertModal";
 
 const initialStateError = {
@@ -15,8 +19,8 @@ const initialStateError = {
 };
 
 export type FormCardType = CardType & {
-  string_date: string
-}
+  string_date: string;
+};
 
 export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
   onClose,
@@ -28,9 +32,9 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
     date: "",
     time: "",
     photo: "",
-    string_date:""
-
+    string_date: "",
   });
+  const [deleteMessage, setDeleteMessage] = useState<boolean>(false)
   const [formErrors, setFormErrors] = useState<CardType>(initialStateError);
   const [formVisible, setFormVisible] = useState<boolean>(true);
   const [alertVisible, setAlertVisible] = useState<{
@@ -38,10 +42,12 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
     status: "success" | "error" | "init";
     message: string;
   }>({ isVisible: false, message: "", status: "init" });
-  const [addSeminar, { isSuccess, isError }] = useAddSeminarMutation();
+  const [addSeminar, { isSuccess: isAddSuccess, isError }] = useAddSeminarMutation();
+  const [editSeminar,{isSuccess: isEditSucces}] = useEditSeminarMutation();
+  const [removeSeminars, {isSuccess: isRemoveSuccess}] = useRemoveSeminarMutation()
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isAddSuccess) {
       setFormVisible(!formVisible);
       setAlertVisible((prev) => ({
         ...prev,
@@ -59,10 +65,28 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
         status: "error",
       }));
     }
-  }, [isSuccess, isError]);
+    if(isEditSucces){
+      setFormVisible(!formVisible);
+      setAlertVisible((prev) => ({
+        ...prev,
+        isVisible: true,
+        message: "успешное изменение",
+        status: "success",
+      }));
+    }
+    if(isRemoveSuccess){
+      setFormVisible(!formVisible);
+      setAlertVisible((prev) => ({
+        ...prev,
+        isVisible: true,
+        message: "успешное удаление ",
+        status: "success",
+      }));
+    }
+  }, [isAddSuccess, isError,isEditSucces, isRemoveSuccess]);
   useEffect(() => {
     if (data) {
-      const dateString = formData.date;
+      const dateString = data.date;
       const [day, month, year] = dateString.split(".");
       const formattedDate = `${year}-${month}-${day}`;
 
@@ -73,7 +97,7 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
         date: formattedDate,
         time: data.time,
         photo: data.photo,
-        string_date: ''
+        string_date: data.date,
       });
     } else {
       setFormData({
@@ -82,11 +106,11 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
         time: "",
         date: "",
         photo: "",
-        string_date: ''
+        string_date: "",
       }); // Сброс формы при добавлении нового элемента
     }
   }, [data]);
-
+  // ручка для управления состояния полей формы
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -102,7 +126,7 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
       setFormData((prev) => ({
         ...prev,
         string_date: formatedDate,
-        date: value
+        date: value,
       }));
     }
 
@@ -118,7 +142,7 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
       }));
     }
   };
-
+  // добавление новых и изменение старых данных
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -136,14 +160,17 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
     // Проверка на остальные ошибки заполненя полей формы
     const isFormValid = Object.values(formErrors).every((item) => item === "");
     if (isFormValid && isValueFormFull) {
-      const data = {
+      const newData = {
         title: formData.title,
         description: formData.description,
         date: formData.string_date,
         time: formData.time,
         photo: formData.photo,
       };
-      await addSeminar(data);
+      // если есть data значит это форма для изменения данных, если нет то для добавления новых
+      {
+        !data ? addSeminar(newData) : editSeminar({ ...newData, id: data.id });
+      }
     } else {
       throw new Error("form is not valid");
     }
@@ -157,14 +184,19 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
             time: "",
             date: "",
             photo: "",
-            string_date: ''
+            string_date: "",
           });
         }, 2000);
     }
   };
-
-  const handleEdit = () => {};
-  const handleRemove = () => {};
+  // удаление данных
+  const handleRemove = (e: FormEvent) => {
+    e.preventDefault();
+    if(formData.id){
+      removeSeminars(formData.id)
+    }
+    
+  };
 
   return (
     <>
@@ -243,12 +275,15 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
         </label>
         {data ? (
           <div className={styled.btn_list}>
-            <Button className={styled.edit} onClick={handleEdit} color="blue">
+            <Button className={styled.edit} onClick={handleSubmit} color="blue">
               Редактировать
             </Button>
             <Button
               className={styled.remove}
-              onClick={handleRemove}
+              onClick={(e:FormEvent)=>{
+                e.preventDefault()
+                setDeleteMessage(true)
+              }}
               color="red"
             >
               Удалить
@@ -269,6 +304,13 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
         message={alertVisible.message}
         isVisible={!alertVisible.isVisible}
       />
+      {deleteMessage && <div className={styled.question}>
+      <p>Удалить?</p>
+        <div>
+          <Button onClick={handleRemove}>да</Button>
+          <Button onClick={()=>setDeleteMessage(false)}>нет</Button>
+        </div>
+      </div>}
     </>
   );
 };
