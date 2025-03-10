@@ -7,10 +7,9 @@
   transition: background-color ease 0.2s, box-shadow ease 0.2s;
 }
 
-.yellow {
-  background-color: $yellow-color;
+.red {
+  background-color: $error-color;
   color: $black-color;
-  box-shadow: 0px 0px 5px $blue-color;
 
   &:hover {
     box-shadow: 0px 0px 10px $blue-color;
