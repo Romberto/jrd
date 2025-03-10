@@ -6,14 +6,6 @@ import { isValidURL } from "../../../utils/utils";
 import { useAddSeminarMutation } from "../../../app/seminarApi";
 import { AlertModal } from "../AlertModal/AlertModal";
 
-let initialState = {
-  title: "",
-  description: "",
-  date: "",
-  time: "",
-  photo: "",
-};
-
 const initialStateError = {
   title: "",
   description: "",
@@ -22,11 +14,23 @@ const initialStateError = {
   photo: "",
 };
 
+export type FormCardType = CardType & {
+  string_date: string
+}
+
 export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
   onClose,
   data,
 }) => {
-  const [formData, setFormData] = useState<CardType>(initialState);
+  const [formData, setFormData] = useState<FormCardType>({
+    title: "",
+    description: "",
+    date: "",
+    time: "",
+    photo: "",
+    string_date:""
+
+  });
   const [formErrors, setFormErrors] = useState<CardType>(initialStateError);
   const [formVisible, setFormVisible] = useState<boolean>(true);
   const [alertVisible, setAlertVisible] = useState<{
@@ -58,7 +62,7 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
   }, [isSuccess, isError]);
   useEffect(() => {
     if (data) {
-      const dateString = data.date;
+      const dateString = formData.date;
       const [day, month, year] = dateString.split(".");
       const formattedDate = `${year}-${month}-${day}`;
 
@@ -69,11 +73,20 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
         date: formattedDate,
         time: data.time,
         photo: data.photo,
+        string_date: ''
       });
     } else {
-      setFormData(initialState); // Сброс формы при добавлении нового элемента
+      setFormData({
+        title: "",
+        description: "",
+        time: "",
+        date: "",
+        photo: "",
+        string_date: ''
+      }); // Сброс формы при добавлении нового элемента
     }
   }, [data]);
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -83,6 +96,16 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
       [name]: value,
     }));
     // валидация ссылки
+    if (name === "date") {
+      const [year, month, day] = value.split("-");
+      const formatedDate = `${day}.${month}.${year}`;
+      setFormData((prev) => ({
+        ...prev,
+        string_date: formatedDate,
+        date: value
+      }));
+    }
+
     if (!isValidURL(value) && name === "photo") {
       setFormErrors((prev) => ({
         ...prev,
@@ -96,7 +119,7 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     let isValueFormFull = true; // переменная все поля заполнены
@@ -113,7 +136,14 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
     // Проверка на остальные ошибки заполненя полей формы
     const isFormValid = Object.values(formErrors).every((item) => item === "");
     if (isFormValid && isValueFormFull) {
-      addSeminar(formData);
+      const data = {
+        title: formData.title,
+        description: formData.description,
+        date: formData.string_date,
+        time: formData.time,
+        photo: formData.photo,
+      };
+      await addSeminar(data);
     } else {
       throw new Error("form is not valid");
     }
@@ -121,7 +151,14 @@ export const Form: React.FC<{ onClose?: () => void; data?: CardType }> = ({
       onClose &&
         setTimeout(() => {
           onClose();
-          setFormData({ ...initialStateError });
+          setFormData({
+            title: "",
+            description: "",
+            time: "",
+            date: "",
+            photo: "",
+            string_date: ''
+          });
         }, 2000);
     }
   };
